@@ -1,7 +1,4 @@
-HELP.md
-target/
-log/
-test/
+resource/
 
 ## document ##
 *.xlx
