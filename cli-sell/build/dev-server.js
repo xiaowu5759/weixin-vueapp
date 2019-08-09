@@ -15,11 +15,14 @@ var proxyTable = config.dev.proxyTable
 
 var app = express()
 
+// 定义一些变量
 var appData = require('../data.json');
+
 var seller = appData.seller;
 var goods = appData.goods;
 var ratings = appData.ratings;
 
+// 写一些接口
 var apiRoutes = express.Router();
 
 apiRoutes.get('/seller', function (req, res) {
