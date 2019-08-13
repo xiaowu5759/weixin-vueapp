@@ -23,8 +23,10 @@ var goods = appData.goods;
 var ratings = appData.ratings;
 
 // 写一些接口
+// 这里就是其实写的是一些路由
 var apiRoutes = express.Router();
 
+// 返回的接口参数
 apiRoutes.get('/seller', function (req, res) {
 	res.json({
 		errno: 0,
