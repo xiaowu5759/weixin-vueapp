@@ -28,6 +28,9 @@ module.exports = {
     // 对js代码分号配置
     'semi': ['error', 'always'],
     // 对空格 的格式化
-    'indent': 0
+    'indent': 0,
+    // 设置单双 引号
+    // "quotes": ["error", "double"]
+    "quotes": 0
   }
 }
