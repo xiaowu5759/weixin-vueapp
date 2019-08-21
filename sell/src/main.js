@@ -3,12 +3,16 @@
 import Vue from "vue";
 import App from "./App"; // App.vue
 import router from "./router";
+import axios from 'axios';
+import VueAxios from 'vue-axios';
 
 import './common/stylus/index.styl';
 // import VueRouter from "vue-router";
 
 Vue.config.productionTip = false;
 
+// 全局注册
+Vue.use(VueAxios, axios);
 // Vue.use(VueRouter);
 
 /* eslint-disable no-new */

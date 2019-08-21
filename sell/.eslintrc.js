@@ -31,6 +31,10 @@ module.exports = {
     'indent': 0,
     // 设置单双 引号
     // "quotes": ["error", "double"]
-    "quotes": 0
+    "quotes": 0,
+    // 方法名之后加 空格
+    'space-before-function-paren': 0,
+    // 禁用未声明的变量
+    'no-undef': 0
   }
 }

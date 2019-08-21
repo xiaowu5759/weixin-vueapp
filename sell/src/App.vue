@@ -26,6 +26,17 @@
 import header from "@/components/header/header.vue";
 
 export default {
+  data () {
+    return {
+      seller: {}
+    };
+  },
+  // 生命周期
+  created() {
+    this.axios.get('/api/seller').then((response) => {
+      console.log(response);
+    });
+  },
   components: {
     "v-header": header
   }
