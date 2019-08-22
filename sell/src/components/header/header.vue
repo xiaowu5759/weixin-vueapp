@@ -42,4 +42,6 @@ export default {
                 display: inline-block
                 font-size: 14px
                 margin-left: 16px
+                .title
+                    margin: 2px 0 8px 0
 </style>
