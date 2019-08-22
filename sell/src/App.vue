@@ -3,7 +3,7 @@
     <!-- <img src="./assets/logo.png">
     <router-view/>-->
     <div class="header">
-      <v-header></v-header>
+      <v-header :seller="seller"></v-header>
     </div>
     <div class="tab border-1px">
       <div class="tab-item">
@@ -25,6 +25,8 @@
 <script>
 import header from "@/components/header/header.vue";
 
+const ERR_OK = 0;
+
 export default {
   data () {
     return {
@@ -33,9 +35,17 @@ export default {
   },
   // 生命周期
   created() {
+    // 这是一个异步过程
     this.axios.get('/api/seller').then((response) => {
-      console.log(response);
+      // console.log(response);
+      let result = response.data;
+      if (result.errno === ERR_OK) {
+        this.seller = result.data;
+        console.log(this.seller);
+      }
     });
+  },
+  methods: {
   },
   components: {
     "v-header": header
