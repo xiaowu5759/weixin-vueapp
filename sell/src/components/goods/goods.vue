@@ -2,14 +2,14 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul>
-        <li v-for="(item,index) in goods" :key="index" class="menu-item">
+        <li v-for="(item,index) in goods" :key="index" class="menu-item" :class="{'current':currentIndex === index}" @click="selectMenu(index,$event)">
           <span class="text border-1px"><span v-show="item.type > 0" class="icon" :class="classMap[item.type]"></span>{{item.name}}</span>
         </li>
       </ul>
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li v-for="(item,index) in goods" :key="index" class="food-list">
+        <li v-for="(item,index) in goods" :key="index" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li class="food-item border-1px" v-for="(food,index) in item.foods" :key="index">
@@ -45,16 +45,56 @@ export default {
       type: Object
     }
   },
-  data() {
-    return {
-      goods: []
-    };
-  },
   methods: {
     _initScroll() {
-      this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
-      this.foodScroll = new BScroll(this.$refs.foodsWrapper, {});
+      this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+        click: true
+      });
+      this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+        probeType: 3
+      });
+
+      this.foodsScroll.on('scroll', (position) => {
+        this.scrollY = Math.abs(Math.round(position.y));
+      });
+    },
+    _calculateHeight() {
+      let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+      let height = 0;
+      this.listHeight.push(height);
+      for (let i = 0; i < foodList.length; i++) {
+        let item = foodList[i];
+        height += item.clientHeight;
+        this.listHeight.push(height);
+      }
+    },
+    selectMenu(index, event) {
+      if (!event._constructed) {
+        return;
+      }
+      console.log(index);
     }
+  },
+  computed: {
+    // 实时计算
+    currentIndex() {
+      for (let i = 0; i < this.listHeight.length; i++) {
+        let height1 = this.listHeight[i];
+        let height2 = this.listHeight[i + 1];
+        if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
+          return i;
+        }
+      }
+      return 0;
+    }
+  },
+  data() {
+    return {
+      goods: [],
+      // 记录每个区间的高度
+      listHeight: [],
+      scrollY: 0
+    };
   },
   created() {
     // todo 也可以抽象成组件，多出重复
@@ -63,8 +103,10 @@ export default {
       let result = response.data;
       if (result.errno === ERR_OK) {
         this.goods = result.data;
+        // 拿到数据，dom更新
         this.$nextTick(() => {
           this._initScroll();
+          this._calculateHeight();
         });
         // console.log(this.goods);
       }
@@ -93,6 +135,15 @@ export default {
         width : 56px
         line-height : 14px
         padding : 0 12px
+        &.current
+          position : relative
+          z-index : 10
+          margin-top: -1px
+          background : #fff
+          font-weight : 700
+          // todo 这里其实没有生效
+          .text
+            border-none()
         .text
           display : table-cell
           width : 56px
@@ -149,7 +200,7 @@ export default {
             font-size : 14px
             color : rgb(7,17,27)
           .description,.extra, .price
-            line-height : 10px
+            line-height : 12px
             font-size : 10px
             color : rgb(147,153,159)
           .description
