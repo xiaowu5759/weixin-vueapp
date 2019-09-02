@@ -16,7 +16,10 @@
       </div>
     </div>
     <!-- <div class="content">I am content</div> -->
-    <router-view></router-view>
+    <!-- 给所有路由组件 传递值 -->
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -42,8 +45,6 @@ export default {
         console.log(this.seller);
       }
     });
-  },
-  methods: {
   },
   components: {
     "v-header": header

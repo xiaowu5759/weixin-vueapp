@@ -31,7 +31,8 @@
         </li>
       </ul>
     </div>
-    <shopcart></shopcart>
+    <!-- 设置属性，属性就是传递值 -->
+    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -42,7 +43,7 @@ import shopcart from '@/components/shopcart/shopcart.vue';
 const ERR_OK = 0;
 
 export default {
-  prop: {
+  props: {
     seller: {
       type: Object
     }
