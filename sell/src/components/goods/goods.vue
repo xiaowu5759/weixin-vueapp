@@ -25,6 +25,9 @@
                 <div class="price">
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontorl :food="food"></cartcontorl>
+                </div>
               </div>
             </li>
           </ul>
@@ -32,13 +35,14 @@
       </ul>
     </div>
     <!-- 设置属性，属性就是传递值 -->
-    <shopcart :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll';
 import shopcart from '@/components/shopcart/shopcart.vue';
+import cartcontrol from '@/components/cartcontorl/cartcontorl.vue';
 
 const ERR_OK = 0;
 
@@ -49,7 +53,8 @@ export default {
     }
   },
   components: {
-    shopcart
+    shopcart,
+    cartcontrol
   },
   methods: {
     _initScroll() {

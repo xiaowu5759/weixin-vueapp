@@ -36,15 +36,20 @@ export default {
   },
   // 生命周期
   created() {
-    // 这是一个异步过程
-    this.axios.get('/api/seller').then((response) => {
-      // console.log(response);
-      let result = response.data;
-      if (result.errno === ERR_OK) {
-        this.seller = result.data;
-        console.log(this.seller);
-      }
-    });
+    this.getSeller();
+  },
+  methods: {
+    getSeller() {
+      // 这是一个异步过程，可能会出现问题
+      this.axios.get('/api/seller').then((response) => {
+        // console.log(response);
+        let result = response.data;
+        if (result.errno === ERR_OK) {
+          this.seller = result.data;
+          console.log(this.seller);
+        }
+      });
+    }
   },
   components: {
     "v-header": header

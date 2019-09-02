@@ -3,15 +3,16 @@
     <div class="content">
       <div class="content-left">
         <div class="logo-wrapper">
-          <div class="logo">
-            <i class="icon-shopping_cart"></i>
+          <div class="logo" :class="{'highlight':totalCount > 0}">
+            <i class="icon-shopping_cart" :class="{'highlight':totalCount > 0}"></i>
           </div>
+          <div class="num" v-show="totalCount > 0">{{totalCount}}</div>
         </div>
-        <div class="price">￥0</div>
+        <div class="price" :class="{'highlight':totalCount > 0}">￥{{totalPrice}}</div>
         <div class="desc">另需配送费￥{{deliveryPrice}}</div>
       </div>
       <div class="content-right">
-        <div class="pay">￥{{minPrice}}起送</div>
+        <div class="pay" :class="payClass">{{payDesc}}</div>
       </div>
     </div>
   </div>
@@ -20,6 +21,14 @@
 <script type="text/ecmascript-6">
 export default {
   props: {
+    selectFoods: {
+      type: Array,
+      default() {
+        return [
+          {price: 10, count: 1}
+        ];
+      }
+    },
     deliveryPrice: {
         type: Number,
         default: 0
@@ -27,6 +36,44 @@ export default {
     minPrice: {
         type: Number,
         default: 0
+    }
+  },
+  // 计算属性
+  computed: {
+    // 计算总价
+    totalPrice() {
+      let total = 0;
+      this.selectFoods.forEach((food) => {
+        total += food.price * food.count;
+      });
+      return total;
+    },
+    // 计算总数
+    totalCount() {
+      let count = 0;
+      this.selectFoods.forEach((food) => {
+        count += food.count;
+      });
+      return count;
+    },
+    // 还差多少起送
+    payDesc() {
+      if (this.totalPrice === 0) {
+        return `￥${this.minPrice}起送`;
+      } else if (this.totalPrice < this.minPrice) {
+        let diff = this.minPrice - this.totalPrice;
+        return `还差￥${diff}起送`;
+      } else {
+        return '去结算';
+      }
+    },
+    // payDesc的属性变换
+    payClass() {
+      if (this.totalPrice < this.minPrice || this.totalPrice === 0) {
+        return 'not-enough';
+      } else {
+        return 'enough';
+      }
     }
   }
 };
@@ -66,10 +113,28 @@ export default {
             border-radius : 50%
             background : #2b343c
             text-align : center
+            &.highlight
+              background : rgb(0,160,220)
             .icon-shopping_cart
               line-height : 44px
               font-size : 24px
               color: #80858a
+              &.highlight
+                color : #ffffff
+          .num
+            position : absolute
+            top : 0
+            right : 0
+            width: 24px
+            height : 16px
+            line-height : 16px
+            text-align : center
+            border-radius : 16px
+            font-size : 9px
+            font-weight : 700
+            color : #ffffff
+            background : rgb(240, 20, 20)
+            box-shadow : 0 4px 8px 0 rgba(0,0,0,0.4)
         .price
           display :inline-block
           vertical-align : top
@@ -81,6 +146,8 @@ export default {
           font-size : 16px
           font-weight : 700
           color : rgba(255,255,255,0.4)
+          &.highlight
+            color : #ffffff
         .desc
           display :inline-block
           vertical-align : top
@@ -92,12 +159,17 @@ export default {
       .content-right
         flex: 0 0 105px
         width : 105px
-        background : #2b333b
+        // background : #2b333b
         .pay
-          height : 48px
+          height : 56px
           line-height : 48px
           text-align : center
           font-size : 12px
           font-weight : 500
-          color : rgba(255,255,255,0.4)
+          &.not-enough
+            color : rgba(255,255,255,0.4)
+            background : #2b333b
+          &.enough
+            background : #00b43c
+            color : #ffffff
 </style>
