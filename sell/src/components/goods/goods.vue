@@ -9,7 +9,7 @@
     </div>
     <div class="foods-wrapper" ref="foodsWrapper">
       <ul>
-        <li v-for="(item,index) in goods" :key="index" class="food-list food-list-hook">
+        <li v-for="(item,index) in goods" :key="index" class="food-list" ref="foodList">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li class="food-item border-1px" v-for="(food,index) in item.foods" :key="index">
@@ -31,11 +31,13 @@
         </li>
       </ul>
     </div>
+    <shopcart></shopcart>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll';
+import shopcart from '@/components/shopcart/shopcart.vue';
 
 const ERR_OK = 0;
 
@@ -45,21 +47,29 @@ export default {
       type: Object
     }
   },
+  components: {
+    shopcart
+  },
   methods: {
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true
       });
       this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+        click: true,
         probeType: 3
       });
 
       this.foodsScroll.on('scroll', (position) => {
-        this.scrollY = Math.abs(Math.round(position.y));
+        // 判断滑动方向，避免下拉时分类高亮错误（如第一分类商品数量为1时，下拉使得第二分类高亮）
+        if (position.y <= 0) {
+          this.scrollY = Math.abs(Math.round(position.y));
+        }
       });
     },
     _calculateHeight() {
-      let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
+      // .foodsWrapper.getElementsByClassName('food-list-hook')
+      let foodList = this.$refs.foodList;
       let height = 0;
       this.listHeight.push(height);
       for (let i = 0; i < foodList.length; i++) {
@@ -68,10 +78,14 @@ export default {
         this.listHeight.push(height);
       }
     },
-    selectMenu(index, event) {
-      if (!event._constructed) {
-        return;
-      }
+    selectMenu(index) {
+      // if (!event._constructed) {
+      //   return;
+      // }
+      let foodList = this.$refs.foodList;
+      // 获取到相应的dom
+      let el = foodList[index];
+      this.foodsScroll.scrollToElement(el, 300);
       console.log(index);
     }
   },
