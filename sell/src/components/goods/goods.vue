@@ -62,7 +62,11 @@ export default {
     },
     // 私有drop方法里面，可以调用 购物车组件里面的drop方法
     _drop(target) {
-      this.$refs.shopcart.drop(target);
+      // 体验优化，异步执行下落动画
+      this.$nextTick(() => {
+        this.$refs.shopcart.drop(target);
+      });
+      // this.$refs.shopcart.drop(target);
     },
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {

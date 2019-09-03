@@ -1,6 +1,6 @@
 <template>
   <div class="shopcart">
-    <div class="content">
+    <div class="content" @click="toggleList">
       <div class="content-left">
         <div class="logo-wrapper">
           <div class="logo" :class="{'highlight':totalCount > 0}">
@@ -24,11 +24,37 @@
         </transition>
       </div>
     </div>
+    <transition name="fold">
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty">清空</span>
+        </div>
+        <div class="list-content">
+          <ul>
+            <li class="food" v-for="food in selectFoods" :key="food.$index">
+              <span class="name">{{food.name}}</span>
+              <div class="price">
+                <span>￥{{food.price*food.count}}</span>
+              </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import cartcontrol from '@/components/cartcontorl/cartcontorl.vue';
+
 export default {
+  components: {
+    cartcontrol
+  },
   props: {
     selectFoods: {
       type: Array,
@@ -83,6 +109,23 @@ export default {
       } else {
         return 'enough';
       }
+    },
+    // 监控某种变化
+    // 这样是只读的，要更改，就报错了，想更改，就要用get和set方法
+    // 列表展示逻辑 还是有bug
+    listShow: {
+      get() {
+        return this.fold;
+      },
+      // 如果等于零
+      set() {
+        if (!this.totalCount) {
+          this.fold = true;
+          return false;
+        }
+        let show = !this.fold;
+        return show;
+      }
     }
   },
   methods: {
@@ -114,7 +157,7 @@ export default {
     },
     dropping(el) {
       /* eslint-disable no-unused-vars */
-      // 主动触发浏览器
+      // 主动触发浏览器 强制刷新（重绘）
       // todo 这句话 很关键，但是不知道干啥
       // 防止数据未获取，dom异步更新
       let rf = el.offsetHeight;
@@ -148,6 +191,13 @@ export default {
           return;
         }
       }
+    },
+    toggleList() {
+      if (!this.totalCount) {
+        return;
+      }
+      // 如果不是空，折叠为false
+      this.fold = !this.fold;
     }
   },
   data() {
@@ -169,7 +219,9 @@ export default {
         show: false
       }],
       // 已经下落小球
-      dropBalls: []
+      dropBalls: [],
+      // 列表是否是折叠的
+      fold: false
     };
   }
 };
@@ -282,4 +334,16 @@ export default {
           border-radius : 50%
           background : rgb(0, 160, 220)
           transition : all 0.4s linear
+    .shopcart-list
+      position : absolute
+      left : 0
+      top : 0
+      z-index : -1
+      width : 100%
+      // 偏移变换
+      transform: translate3d(0, -100%, 0)
+      &.fold-enter-active, &.fold-leave-active
+        transition: all 0.5s
+      &.fold-enter, &.fold-leave-to
+        transform: translate3d(0, 0, 0)
 </style>
