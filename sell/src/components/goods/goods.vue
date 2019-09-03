@@ -26,7 +26,7 @@
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol @add="addFood" :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -35,7 +35,7 @@
       </ul>
     </div>
     <!-- 设置属性，属性就是传递值 -->
-    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -57,6 +57,13 @@ export default {
     cartcontrol
   },
   methods: {
+    addFood(target) {
+      this._drop(target);
+    },
+    // 私有drop方法里面，可以调用 购物车组件里面的drop方法
+    _drop(target) {
+      this.$refs.shopcart.drop(target);
+    },
     _initScroll() {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
         click: true

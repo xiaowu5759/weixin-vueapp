@@ -15,6 +15,15 @@
         <div class="pay" :class="payClass">{{payDesc}}</div>
       </div>
     </div>
+    <div class="ball-container">
+      <div v-for="(ball,index) in balls" :key="index">
+        <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
+          <div class="ball" v-show="ball.show">
+            <div class="inner inner-hook"></div>
+          </div>
+        </transition>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -75,6 +84,93 @@ export default {
         return 'enough';
       }
     }
+  },
+  methods: {
+    beforeDrop(el) {
+      // 遍历显示的小球
+      let count = this.balls.length;
+      while (count--) {
+        let ball = this.balls[count];
+        if (ball.show) {
+          // 浏览器接口，获取元素相对视口的位置， 十字架坐标
+          // 小球原本在购物车位置
+          let rect = ball.el.getBoundingClientRect();
+          // 计算小球 到 购物车 x,y差值
+          //  正向值
+          let x = rect.left - 32;
+          // 负值
+          let y = -(window.innerHeight - rect.top - 22);
+          // 将元素显示出来
+          el.style.display = '';
+          // 外层元素 做纵向动画
+          el.style.webkitTransform = `translate3d(0,${y}px,0)`;
+          el.style.transform = `translate3d(0,${y}px,0)`;
+          // 内层元素 做横向动画
+          let inner = el.getElementsByClassName('inner-hook')[0];
+          inner.style.webkitTransform = `translate3d(${x}px,0,0)`;
+          inner.style.transform = `translate3d(${x}px,0,0)`;
+        }
+      }
+    },
+    dropping(el) {
+      /* eslint-disable no-unused-vars */
+      // 主动触发浏览器
+      // todo 这句话 很关键，但是不知道干啥
+      // 防止数据未获取，dom异步更新
+      let rf = el.offsetHeight;
+      this.$nextTick(() => {
+        // 将样式重置回来
+        el.style.webkitTransform = 'translate3d(0,0,0)';
+        el.style.transform = 'translate3d(0,0,0)';
+        let inner = el.getElementsByClassName('inner-hook')[0];
+        inner.style.webkitTransform = 'translate3d(0,0,0)';
+        inner.style.transform = 'translate3d(0,0,0)';
+        // el.addEventListener('transitionend', done);
+      });
+    },
+    afterDrop(el) {
+      // 将ball的效果重置
+      let ball = this.dropBalls.shift();
+      if (ball) {
+        ball.show = false;
+        el.style.display = 'none';
+      }
+    },
+    drop(el) {
+      // 拿到相应的元素
+      // console.log(el);
+      for (let i = 0; i < this.balls.length; i++) {
+        let ball = this.balls[i];
+        if (!ball.show) {
+          ball.show = true;
+          ball.el = el;
+          this.dropBalls.push(ball);
+          return;
+        }
+      }
+    }
+  },
+  data() {
+    return {
+      balls:
+      [{
+        show: false
+      },
+      {
+        show: false
+      },
+      {
+        show: false
+      },
+      {
+        show: false
+      },
+      {
+        show: false
+      }],
+      // 已经下落小球
+      dropBalls: []
+    };
   }
 };
 </script>
@@ -172,4 +268,18 @@ export default {
           &.enough
             background : #00b43c
             color : #ffffff
+    .ball-container
+      .ball
+        position : fixed
+        left : 32px
+        bottom : 22px
+        z-index : 200
+        // 纵轴变化时 bezier曲线
+        transition : all 0.4s cubic-bezier(0.49, -0.29, 0.75, 0.41)
+        .inner
+          width : 16px
+          height : 16px
+          border-radius : 50%
+          background : rgb(0, 160, 220)
+          transition : all 0.4s linear
 </style>

@@ -31,6 +31,8 @@ export default {
         this.food.count++;
       }
       // console.log(this.food.count);
+      // 分发到 add
+      this.$emit('add', event.target);
     },
     removeCart(event) {
       if (!event._constructed) {
