@@ -26,7 +26,7 @@
                   <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontorl :food="food"></cartcontorl>
+                  <cartcontrol :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -35,7 +35,7 @@
       </ul>
     </div>
     <!-- 设置属性，属性就是传递值 -->
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -84,10 +84,11 @@ export default {
         this.listHeight.push(height);
       }
     },
-    selectMenu(index) {
-      // if (!event._constructed) {
-      //   return;
-      // }
+    // pc端防止 触发两次
+    selectMenu(index, event) {
+      if (!event._constructed) {
+        return;
+      }
       let foodList = this.$refs.foodList;
       // 获取到相应的dom
       let el = foodList[index];
@@ -106,6 +107,17 @@ export default {
         }
       }
       return 0;
+    },
+    selectFoods() {
+      let foods = [];
+      this.goods.forEach((good) => {
+        good.foods.forEach((food) => {
+          if (food.count) {
+            foods.push(food);
+          }
+        });
+      });
+      return foods;
     }
   },
   data() {
@@ -238,4 +250,8 @@ export default {
             .old
               text-decoration : line-through
               font-size : 10px
+          .cartcontrol-wrapper
+            position : absolute
+            right: 0
+            bottom: 12px
 </style>
