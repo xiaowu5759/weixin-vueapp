@@ -104,7 +104,7 @@ export default {
       // 获取到相应的dom
       let el = foodList[index];
       this.foodsScroll.scrollToElement(el, 300);
-      console.log(index);
+      // console.log(index);
     }
   },
   computed: {

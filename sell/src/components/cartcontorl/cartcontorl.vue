@@ -20,6 +20,7 @@ export default {
     }
   },
   methods: {
+    // 由better scroll派发的时间
     addCart(event) {
       if (!event._constructed) {
         return;
