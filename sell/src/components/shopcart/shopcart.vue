@@ -12,7 +12,7 @@
           <div class="price" :class="{'highlight':totalCount > 0}">￥{{totalPrice}}</div>
           <div class="desc">另需配送费￥{{deliveryPrice}}</div>
         </div>
-        <div class="content-right">
+        <div class="content-right" @click.stop.prevent="pay">
           <div class="pay" :class="payClass">{{payDesc}}</div>
         </div>
       </div>
@@ -48,7 +48,7 @@
       </transition>
     </div>
     <transition name="fade">
-      <div class="list-mask" v-show="listShow"></div>
+      <div class="list-mask" @click="hideList" v-show="listShow"></div>
     </transition>
   </div>
 </template>
@@ -228,6 +228,18 @@ export default {
       }
       // 如果不是空，折叠为false
       this.fold = !this.fold;
+    },
+    hideList() {
+      // 更改数据
+      this.fold = true;
+    },
+    pay() {
+      if (this.totalPrice < this.minPrice){
+        // 如果不满足起送价格 就什么也不做
+        return;
+      }
+      // todo 应该实现 订单详情页面
+      window.alert(`支付${this.totalPrice}元`);
     }
   },
   data() {

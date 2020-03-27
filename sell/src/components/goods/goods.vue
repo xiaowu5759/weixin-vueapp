@@ -12,7 +12,7 @@
         <li v-for="(item,index) in goods" :key="index" class="food-list" ref="foodList">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li class="food-item border-1px" v-for="(food,index) in item.foods" :key="index">
+            <li @click="selectFood(food, $event)" class="food-item border-1px" v-for="(food,index) in item.foods" :key="index">
               <div class="icon">
                 <img width="57px" height="57px" :src="food.icon">
               </div>
@@ -36,6 +36,7 @@
     </div>
     <!-- 设置属性，属性就是传递值 -->
     <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <food ref="food" :food="selectdFood"></food>
   </div>
 </template>
 
@@ -43,6 +44,7 @@
 import BScroll from 'better-scroll';
 import shopcart from '@/components/shopcart/shopcart.vue';
 import cartcontrol from '@/components/cartcontorl/cartcontorl.vue';
+import food from '@/components/food/food.vue';
 
 const ERR_OK = 0;
 
@@ -54,7 +56,8 @@ export default {
   },
   components: {
     shopcart,
-    cartcontrol
+    cartcontrol,
+    food
   },
   methods: {
     addFood(target) {
@@ -105,6 +108,14 @@ export default {
       let el = foodList[index];
       this.foodsScroll.scrollToElement(el, 300);
       // console.log(index);
+    },
+    selectFood(food, event) {
+      if (!event._constructed) {
+        return;
+      }
+      // 避免函数名冲突
+      this.selectdFood = food;
+      this.$refs.food.show();
     }
   },
   computed: {
@@ -136,7 +147,9 @@ export default {
       goods: [],
       // 记录每个区间的高度
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      // 表示为一个空对象
+      selectdFood: {}
     };
   },
   created() {

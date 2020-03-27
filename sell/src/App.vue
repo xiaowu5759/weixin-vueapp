@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app">
     <!-- <img src="./assets/logo.png">
     <router-view/>-->
     <v-header :seller="seller"></v-header>
