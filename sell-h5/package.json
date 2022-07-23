@@ -1,8 +1,8 @@
 {
-  "name": "sell",
+  "name": "sell-h5",
   "version": "1.0.0",
-  "description": "sell app",
-  "author": "xiaowu",
+  "description": "sell h5 app",
+  "author": "xiaowu5759",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
