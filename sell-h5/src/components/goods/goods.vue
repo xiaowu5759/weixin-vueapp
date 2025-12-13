@@ -36,14 +36,14 @@
     </div>
     <!-- 设置属性，属性就是传递值 -->
     <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
-    <food ref="food" :food="selectdFood"></food>
+    <food ref="food" @add="addFood" :food="selectdFood"></food>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll';
 import shopcart from '@/components/shopcart/shopcart.vue';
-import cartcontrol from '@/components/cartcontorl/cartcontorl.vue';
+import cartcontrol from '@/components/cartcontrol/cartcontrol.vue';
 import food from '@/components/food/food.vue';
 
 const ERR_OK = 0;

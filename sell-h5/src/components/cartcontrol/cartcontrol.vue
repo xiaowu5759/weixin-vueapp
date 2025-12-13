@@ -1,12 +1,13 @@
 <template>
   <div class="cartcontrol">
     <transition name="move">
-      <div class="cart-decrease" v-show="food.count > 0" @click="removeCart">
+      <!-- 点击被穿透，冒泡向上，出发父组件点击，设置stop -->
+      <div class="cart-decrease" v-show="food.count > 0" @click.stop.prevent="removeCart($event)">
         <span class="inner icon-remove_circle_outline"></span>
       </div>
     </transition>
     <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
-    <div class="cart-increase icon-add_circle" @click="addCart"></div>
+    <div class="cart-increase icon-add_circle" @click.stop.prevent="addCart($event)"></div>
   </div>
 </template>
 
@@ -32,7 +33,7 @@ export default {
         this.food.count++;
       }
       // console.log(this.food.count);
-      // 分发到 add
+      // 分发到 父组件的 add
       this.$emit('add', event.target);
     },
     removeCart(event) {

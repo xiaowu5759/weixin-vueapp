@@ -1,4 +1,7 @@
 res/
+.DS_Store
+**/.DS_Store
+.DS_Store?
 
 ## document ##
 *.xlx
